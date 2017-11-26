@@ -9,6 +9,7 @@
 #include "freertos/event_groups.h"
 #include "esp_log.h"
 #include "tcpip_adapter.h"
+//#include "blink.hpp"
 static EventGroupHandle_t wifi_event_group;
 const int CONNECTED_BIT = BIT0;
 //static char* TAG = "app_main";
@@ -18,7 +19,7 @@ const int CONNECTED_BIT = BIT0;
 
 #include "cJSON.h"
 
-#define LED_BUILTIN 16
+#define LED_BUILTIN 2
 #define delay(ms) (vTaskDelay(ms/portTICK_RATE_MS))
 char* json_unformatted;
 
@@ -36,6 +37,8 @@ const static char http_index_hml[] = "<!DOCTYPE html>"
       "</head>\n"
       "<body>\n"
       "<h1>Hello World, from ESP32!</h1>\n"
+      "<a href=\"/h\">aus</a><br/>\n"
+      "<a href=\"/l\">an</a><br/>\n"
       "</body>\n"
       "</html>\n";
 
@@ -82,8 +85,8 @@ static void initialise_wifi(void)
     ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
     wifi_config_t sta_config = {
         .sta = {
-            .ssid = "Nat",
-            .password = "123456789",
+            .ssid = "GluehPN-open",
+            .password = "",
             .bssid_set = false
         }
     };
@@ -222,6 +225,7 @@ int app_main(void)
     gpio_set_direction(LED_BUILTIN, GPIO_MODE_OUTPUT);
     xTaskCreate(&generate_json, "json", 2048, NULL, 5, NULL);
     xTaskCreate(&http_server, "http_server", 2048, NULL, 5, NULL);
+    //xTaskCreate(&blink_task, "blink_task", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
     return 0;
 }
 
